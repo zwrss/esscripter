@@ -84,24 +84,36 @@ var es = {
         var server = $('#input-hostname').val();
         var url = ""
         if (index != null) {
-          url += ("/" + index)
+          url += ("/" + index);
           if (type != null) {
-            url += ("/" + type)
+            url += ("/" + type);
           }
         }
-        url += "/_search"
+        url += "/_search";
         return syncCallES(server, url, "POST", query == null ? null : JSON.stringify(query));
     },
 
     get: function (index, type, id) {
         var server = $('#input-hostname').val();
-        var url = index + "/" + type + "/" + id
+        var url = index + "/" + type + "/" + id;
         return syncCallES(server, url, "GET", null);
     },
 
     info: function () {
         var server = $('#input-hostname').val();
         return syncCallES(server, "", "GET", null);
+    },
+
+    index: function (index, type, body, id = null, routing = null) {
+        var server = $('#input-hostname').val();
+        var url = index + "/" + type;
+        if (id != null) {
+            url += ("/" + id);
+            if (routing != null) {
+                url += ("?routing=" + routing)
+            }
+        }
+        return syncCallES(server, url, "POST", JSON.stringify(body));
     }
 
 };
