@@ -114,7 +114,34 @@ var es = {
             }
         }
         return syncCallES(server, url, "POST", JSON.stringify(body));
-    }
+    },
+
+     scan: function(query, callback, index = null, type = null) {
+         var server = $('#input-hostname').val();
+         var url = "";
+         if (index != null) {
+             url += ("/" + index);
+             if (type != null) {
+                 url += ("/" + type);
+             }
+         }
+         url += "/_search?scroll=1m";
+         var url_scroll = "/_search/scroll?scroll=1m"
+         console.log("calling es first time in scroll")
+         var result = syncCallES(server, url, "POST", JSON.stringify(query));
+         var scrollId = result._scroll_id;
+         var hits = result.hits.hits;
+         var getChunk = function () {
+             console.log("getting scroll chunk")
+             var result = syncCallES(server, url_scroll, "POST", scrollId);
+             scrollId = result._scroll_id;
+             hits = result.hits.hits;
+         };
+         while(hits.length > 0) {
+             callback(hits);
+             getChunk(scrollId);
+         }
+     }
 
 };
 
