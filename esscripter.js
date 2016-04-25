@@ -93,9 +93,12 @@ var es = {
         return syncCallES(server, url, "POST", query == null ? null : JSON.stringify(query));
     },
 
-    get: function (index, type, id) {
+    get: function (index, type, id, routing = null) {
         var server = $('#input-hostname').val();
         var url = index + "/" + type + "/" + id;
+        if (routing != null) {
+            url += ("?routing=" + routing);
+        }
         return syncCallES(server, url, "GET", null);
     },
 
